@@ -16,6 +16,7 @@
 
 #include <esp_err.h>
 #include <esp_partition.h>
+#include "new_partition.h"
 
 class GrowPartition {
 public:
@@ -28,11 +29,13 @@ private:
     static constexpr size_t PARTITION_TABLE_ADDRESS = 0x8000;
     static constexpr size_t PARTITION_TABLE_SIZE = 0xC00;
     static constexpr size_t PARTITION_TABLE_ALIGNED_SIZE = 0x1000;  // Must be divisible by 4k.
-    static constexpr long TOTAL_PARTITION_LEN = 3072;
+    static constexpr size_t NEW_PARTITION_LEN = sizeof (NEW_PARTITION);
 
     esp_err_t replace_partition_table();
     bool running_from_ota1();
     bool invalid_or_already_written();
 };
+
+static_assert(sizeof (NEW_PARTITION) % 256 == 0, "Partition table size must be a multiple of 256 bytes. Add padding with 0xFF bytes if needed.");
 
 #endif // GROW_PARTITION_H

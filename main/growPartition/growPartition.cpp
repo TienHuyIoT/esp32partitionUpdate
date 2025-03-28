@@ -22,26 +22,24 @@
 #include <esp_system.h>
 
 #include "growPartition.h"
-#include "new_partition.h"
 
 constexpr char GP_TAG[] = "GROW_PARTITION";
-#define NEW_PARTITION_LEN sizeof(NEW_PARTITION)
 
 esp_err_t GrowPartition::replace_partition_table() {
-    if (PARTITION_TABLE_SIZE != TOTAL_PARTITION_LEN) {
+    if (PARTITION_TABLE_SIZE != PARTITION_TABLE_SIZE) {
         ESP_LOGI(GP_TAG, "Unexpected partition table size.");
         esp_ota_mark_app_invalid_rollback_and_reboot();
         return ESP_FAIL;
     }
 
     // Copy the partition table to DRAM. This is a requirement of spi_flash_write.
-    uint8_t* new_partition_table = (uint8_t*)malloc(TOTAL_PARTITION_LEN);
+    uint8_t* new_partition_table = (uint8_t*)malloc (PARTITION_TABLE_SIZE);
     if (new_partition_table == NULL) {
         ESP_LOGI(GP_TAG, "Failed to allocate memory for partition table.");
         return ESP_FAIL;
     }
 
-    memset(new_partition_table, 0xff, TOTAL_PARTITION_LEN);
+    memset (new_partition_table, 0xff, PARTITION_TABLE_SIZE);
     memcpy(new_partition_table, NEW_PARTITION, NEW_PARTITION_LEN);
 
     if (new_partition_table[0] != 0xAA || new_partition_table[1] != 0x50) {
