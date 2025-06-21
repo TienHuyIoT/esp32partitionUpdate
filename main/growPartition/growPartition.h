@@ -18,24 +18,33 @@
 #include <esp_partition.h>
 #include "new_partition.h"
 
-class GrowPartition {
+
+class UpdatePartition {
 public:
-    GrowPartition() = default;
-    bool grow();
+    typedef enum : uint8_t {
+        OTA_PART_0 = 0,
+        OTA_PART_1,
+        OTA_PART_ANY
+    } ota_part_t;
+    
+public:
+    UpdatePartition(const uint8_t *part, size_t length) {
+        _new_partition_len = length;
+        _new_partition = part;
+    }
+    bool update(uint8_t ota_partition);
 
 private:
     static constexpr int RETRY_LIMIT = 10;
-    static constexpr int RETRY_WAIT = 100;
+    static constexpr int RETRY_WAIT = 100U;
     static constexpr size_t PARTITION_TABLE_ADDRESS = 0x8000;
-    static constexpr size_t PARTITION_TABLE_SIZE = 0xC00;
+    static constexpr size_t PARTITION_TABLE_SIZE = 0xC00;   // 3kB, which is the size of the partition table on ESP32.
     static constexpr size_t PARTITION_TABLE_ALIGNED_SIZE = 0x1000;  // Must be divisible by 4k.
-    static constexpr size_t NEW_PARTITION_LEN = sizeof (NEW_PARTITION); // Must be divisible by 256.
+    size_t _new_partition_len;
+    const uint8_t *_new_partition;
 
     esp_err_t replace_partition_table();
-    bool running_from_ota1();
+    uint8_t running_from_ota();
     bool invalid_or_already_written();
 };
-
-static_assert(sizeof (NEW_PARTITION) % 256 == 0, "Partition table size must be a multiple of 256 bytes. Add padding with 0xFF bytes if needed.");
-
 #endif // GROW_PARTITION_H
