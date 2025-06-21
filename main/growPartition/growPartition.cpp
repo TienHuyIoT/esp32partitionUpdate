@@ -22,8 +22,8 @@
 #include <esp_system.h>
 #include "growPartition.h"
 
-#define PARTITION_UPDATE_CONSOLE_I(f_, ...)  printf("I [PARTITION_UPDATE] %s line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
-#define PARTITION_UPDATE_CONSOLE_E(f_, ...)  printf("E [PARTITION_UPDATE] %s line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
+#define PARTITION_UPDATE_CONSOLE_I(f_, ...)  printf("I [PARTITION_UPDATE] Func[%s] line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
+#define PARTITION_UPDATE_CONSOLE_E(f_, ...)  printf("E [PARTITION_UPDATE] Func[%s] line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
 
 esp_err_t UpdatePartition::replace_partition_table() {
     // Copy the partition table to DRAM. This is a requirement of spi_flash_write.

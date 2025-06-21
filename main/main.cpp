@@ -6,8 +6,8 @@
 #include <esp_system.h>
 #include "sdkconfig.h"
 
-#define MAIN_CONSOLE_I(f_, ...)  printf("I [MAIN] %s line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
-#define MAIN_CONSOLE_E(f_, ...)  printf("E [MAIN] %s line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
+#define MAIN_CONSOLE_I(f_, ...)  printf("I [MAIN] Func[%s] line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
+#define MAIN_CONSOLE_E(f_, ...)  printf("E [MAIN] Func[%s] line %u: " f_ "\r\n",  __func__, __LINE__, ##__VA_ARGS__)
 
 #if !defined(CONFIG_SPI_FLASH_DANGEROUS_WRITE_ALLOWED) || (CONFIG_SPI_FLASH_DANGEROUS_WRITE_ALLOWED == 0)
 #error "CONFIG_SPI_FLASH_DANGEROUS_WRITE_ALLOWED must be enabled to use this code."
@@ -20,10 +20,10 @@ UpdatePartition gUpdatePartition(
 
 extern "C" void app_main(void) {
     if (gUpdatePartition.update(UpdatePartition::OTA_PART_ANY)) {
-      MAIN_CONSOLE_I("Partition update successfully!. Rebooting...");
+      MAIN_CONSOLE_I("Partition table update successfully!.");
       vTaskDelay (pdMS_TO_TICKS (1000)); // Wait for a second before rebooting
     } else {
-        MAIN_CONSOLE_E("Failed to update partition. Rebooting anyway...");
+        MAIN_CONSOLE_E("Failed / Canceled to update partition table.");
     }
 
     if (esp_ota_check_rollback_is_possible ()) {

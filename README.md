@@ -1,6 +1,7 @@
 # PartitionGrow
 
 A tool to safely modify the ESP32 partition table via OTA (Over The Air).
+Writing the partition table from code is normally not allowed. SDKconfig has to be updated with CONFIG_SPI_FLASH_DANGEROUS_WRITE_ALLOWED=y in order to bypass the protection.
 
 ## Description
 
